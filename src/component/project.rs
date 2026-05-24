@@ -199,11 +199,18 @@ pub fn Project() -> impl IntoView {
                                 children=move |proj| {
                                     let techs = proj.technologies.clone();
                                     let details_url = format!("/project/{}", proj.id);
+                                    let display_desc = if proj.description.chars().count() > 100 {
+                                        let mut truncated: String = proj.description.chars().take(100).collect();
+                                        truncated.push_str("...");
+                                        truncated
+                                    } else {
+                                        proj.description.clone()
+                                    };
                                     view! {
                                         <A href=details_url attr:class="project-card-link">
                                             <div class="project-card">
                                                 <h3>{proj.title.clone()}</h3>
-                                                <p>{proj.description.clone()}</p>
+                                                <p>{display_desc}</p>
                                                 <div class="project-technologies">
                                                     {techs.into_iter().map(|tech| {
                                                         view! { <span class="project-technologies-item">{tech}</span> }
