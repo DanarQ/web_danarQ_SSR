@@ -1,0 +1,16 @@
+@import "./styles/font.scss";
+@import "./styles/navbar.scss";
+@import "./styles/hero.scss";
+@import "./styles/project.scss";
+@import "./styles/skills.scss";
+@import "./styles/contact.scss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

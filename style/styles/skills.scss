@@ -1,0 +1,129 @@
+$skills-bg-white: #ffffff;
+$skills-bg-hover: #111111;
+$skills-border-color: #dcdcdc;
+$skills-border-item: #eaeaea;
+$skills-text-primary: #111111;
+$skills-text-muted: #555555;
+$skills-text-item: #333333;
+$skills-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+$skills-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.08);
+$skills-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+.skills {
+  &-container {
+    padding: 4rem;
+    font-family: $body-font;
+
+    @media (max-width: 768px) {
+      padding: 2.5rem 1rem;
+    }
+
+    h2 {
+      font-family: $heading-font;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: $skills-text-primary;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.03em;
+      position: relative;
+      display: inline-block;
+
+      @media (max-width: 768px) {
+        font-size: 1.75rem;
+        margin-bottom: 1.75rem;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 48px;
+        height: 3px;
+        background: $skills-text-primary;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  // Categories
+  &-web-development,
+  &-mobile-development,
+  &-database,
+  &-programming-Languages {
+    background: $skills-bg-white;
+    border: 1px solid $skills-border-color;
+    border-radius: 1rem;
+    padding: 1.75rem;
+    box-shadow: $skills-shadow;
+    transition: $skills-transition;
+
+    @media (max-width: 768px) {
+      padding: 1.25rem;
+    }
+
+    &:hover {
+      box-shadow: $skills-shadow-hover;
+      border-color: $skills-text-primary;
+    }
+
+    h3 {
+      font-family: $heading-font;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $skills-text-primary;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: $skills-bg-white;
+      border: 1px solid $skills-border-item;
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      color: $skills-text-item;
+      font-weight: 500;
+      transition: $skills-transition;
+      cursor: default;
+
+      svg {
+        font-size: 1.25rem;
+        color: $skills-text-muted;
+        transition: $skills-transition;
+      }
+
+      &:hover {
+        background: $skills-bg-hover;
+        color: #ffffff;
+        border-color: $skills-bg-hover;
+        transform: scale(1.02);
+
+        svg {
+          color: #ffffff;
+          transform: rotate(8deg) scale(1.15);
+        }
+      }
+    }
+  }
+}
