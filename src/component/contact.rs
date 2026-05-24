@@ -35,13 +35,21 @@ pub fn Contact() -> impl IntoView {
         set_error_message.set(None);
         set_is_submitting.set(true);
 
-        // Web3Forms endpoint: https://api.web3forms.com/submit
-        // You can get your own free Access Key from: https://web3forms.com/
-        // Replace this placeholder with your actual access key:
-        let access_key = "f41971e9-d94c-4736-a2c0-e667e4fb0639".to_string();
-
+        //Mengambil access key untuk web3forms
         #[cfg(target_arch = "wasm32")]
         leptos::task::spawn_local(async move {
+            let access_key = match get_web3forms_key().await {
+                Ok(key) => key,
+                Err(err) => {
+                    set_is_submitting.set(false);
+                    set_error_message.set(Some(format!(
+                        "Failed to retrieve form access key: {}",
+                        err
+                    )));
+                    return;
+                }
+            };
+
             #[derive(serde::Serialize)]
             struct Web3FormsPayload {
                 access_key: String,
@@ -101,7 +109,7 @@ pub fn Contact() -> impl IntoView {
 
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let _ = (n, e, s, m, access_key, set_is_submitting, set_submit_success, set_error_message, set_name, set_email, set_subject, set_message);
+            let _ = (n, e, s, m, set_is_submitting, set_submit_success, set_error_message, set_name, set_email, set_subject, set_message);
         }
     };
 
@@ -263,5 +271,23 @@ pub fn Contact() -> impl IntoView {
                 </div>
             </div>
         </section>
+    }
+}
+
+#[server(GetWeb3FormsKey, "/api")]
+pub async fn get_web3forms_key() -> Result<String, ServerFnError> {
+    #[cfg(feature = "ssr")]
+    {
+        let key = std::env::var("WEB3FROM_ACCESS_KEY").to_string();
+        if key.is_empty() {
+            return Err(ServerFnError::ServerError(
+                "WEB3FROM_ACCESS_KEY is not set".into(),
+            ));
+        }
+        Ok(key)
+    }
+    #[cfg(not(feature = "ssr"))]
+    {
+        unreachable!()
     }
 }

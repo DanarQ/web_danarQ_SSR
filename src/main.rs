@@ -30,7 +30,6 @@ async fn main() {
             None
         }
     };
-
     let app = Router::new()
         .leptos_routes_with_context(&leptos_options, routes, {
             let db = db_conn.clone();
