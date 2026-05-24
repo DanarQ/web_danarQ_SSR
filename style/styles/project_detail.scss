@@ -2,19 +2,20 @@ $detail-bg-white: #ffffff;
 $detail-border-color: #dcdcdc;
 $detail-text-primary: #111111;
 $detail-text-muted: #555555;
-$detail-tech-bg: #f0f0f0;
-$detail-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-$detail-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+$detail-tech-bg: #f5f5f7;
+$detail-shadow: 0 12px 40px rgba(0, 0, 0, 0.03);
+$detail-shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.06);
+$detail-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
 .project-detail-container {
-  max-width: 800px;
+  max-width: 1140px;
   margin: 4rem auto;
   padding: 0 2rem;
   font-family: $body-font;
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 1.25rem;
   }
 
   .back-btn {
@@ -27,14 +28,21 @@ $detail-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 0.95rem;
     margin-bottom: 2.5rem;
     transition: $detail-transition;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 
     .back-icon {
       font-size: 1.2rem;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     &:hover {
-      opacity: 0.8;
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+      transform: translateX(-2px);
+
       .back-icon {
         transform: translateX(-4px);
       }
@@ -49,68 +57,109 @@ $detail-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-.project-detail-content {
-  background: $detail-bg-white;
-  border: 1px solid $detail-border-color;
-  border-radius: 1.25rem;
-  padding: 3rem;
-  box-shadow: $detail-shadow;
+// Dual column layout structure
+.project-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
 
-  @media (max-width: 768px) {
-    padding: 1.5rem;
+  @media (min-width: 992px) {
+    grid-template-columns: 1.6fr 1fr;
   }
 }
 
-.project-detail-header {
-  border-bottom: 1px solid $detail-border-color;
+// Left Column Styles
+.project-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Banner Image Styling
+.project-detail-banner-container {
+  width: 100%;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: $detail-shadow;
+  border: 1px solid $detail-border-color;
+  background: #fdfdfd;
+  aspect-ratio: 16 / 9;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.02);
+    pointer-events: none;
+  }
+
+  .project-detail-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.project-detail-content {
+  background: $detail-bg-white;
+  border: 1px solid $detail-border-color;
+  border-radius: 1.5rem;
+  padding: 3rem;
+  box-shadow: $detail-shadow;
+  transition: $detail-transition;
+
+  &:hover {
+    box-shadow: $detail-shadow-hover;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.75rem;
+  }
+}
+
+.project-detail-header-inner {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   padding-bottom: 2rem;
   margin-bottom: 2rem;
 
   .project-detail-category {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: $detail-text-muted;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #4a5568;
     margin-bottom: 0.75rem;
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
   }
 
   h1 {
     font-family: $heading-font;
-    font-size: 2.5rem;
+    font-size: 2.75rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.15;
     color: $detail-text-primary;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
 
     @media (max-width: 768px) {
-      font-size: 1.85rem;
+      font-size: 2rem;
     }
   }
 
   .project-detail-summary {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 1.6;
     color: $detail-text-muted;
-    margin-bottom: 1.5rem;
+    font-weight: 400;
 
     @media (max-width: 768px) {
-      font-size: 1rem;
-    }
-  }
-
-  .project-detail-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    .tech-badge {
-      background: $detail-tech-bg;
-      color: $detail-text-primary;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
+      font-size: 1.05rem;
     }
   }
 }
@@ -121,12 +170,184 @@ $detail-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 1.5rem;
     font-weight: 700;
     color: $detail-text-primary;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
   }
 
   p {
     font-size: 1rem;
     line-height: 1.8;
     color: $detail-text-muted;
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Right Column (Sidebar) Styles
+.project-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 2rem;
+  }
+}
+
+.project-detail-card {
+  background: $detail-bg-white;
+  border: 1px solid $detail-border-color;
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: $detail-shadow;
+  transition: $detail-transition;
+
+  &:hover {
+    box-shadow: $detail-shadow-hover;
+  }
+
+  h3 {
+    font-family: $heading-font;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $detail-text-primary;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+// Link & CTA Buttons Styling
+.action-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: $detail-transition;
+  border: 1px solid transparent;
+
+  .btn-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &.live-btn {
+    background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: linear-gradient(135deg, #2a2a2a 0%, #444444 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+      .btn-icon {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+
+  &.github-btn {
+    background: #ffffff;
+    color: #111111;
+    border: 1px solid #111111;
+
+    &:hover {
+      background: #f7f7f8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+
+      .btn-icon {
+        transform: rotate(8deg) scale(1.1);
+      }
+    }
+  }
+
+  &.download-btn {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+
+    &:hover {
+      background: #dcfce7;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(21, 128, 61, 0.05);
+
+      .btn-icon {
+        transform: translateY(2px);
+      }
+    }
+  }
+}
+
+// Technologies Card Styling
+.project-detail-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .tech-badge {
+    background: $detail-tech-bg;
+    color: #2d3748;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Metadata Card Rows
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  .info-label {
+    color: #718096;
+    font-weight: 500;
+  }
+
+  .info-value {
+    color: $detail-text-primary;
+    font-weight: 600;
   }
 }

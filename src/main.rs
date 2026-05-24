@@ -23,6 +23,20 @@ async fn main() {
     let db_conn = match sea_orm::Database::connect(&database_url).await {
         Ok(conn) => {
             log!("Database connection established successfully!");
+            // Self-healing migrations to add new columns if they do not exist
+            use sea_orm::{ConnectionTrait, Statement};
+            let migrations = vec![
+                "ALTER TABLE projects ADD COLUMN IF NOT EXISTS image_url VARCHAR;",
+                "ALTER TABLE projects ADD COLUMN IF NOT EXISTS github_url VARCHAR;",
+                "ALTER TABLE projects ADD COLUMN IF NOT EXISTS download_url VARCHAR;",
+                "ALTER TABLE projects ADD COLUMN IF NOT EXISTS live_url VARCHAR;",
+            ];
+            for sql in migrations {
+                let stmt = Statement::from_string(conn.get_database_backend(), sql);
+                if let Err(err) = conn.execute(stmt).await {
+                    log!("Warning: Failed to run column migration: {:?}", err);
+                }
+            }
             Some(conn)
         }
         Err(err) => {

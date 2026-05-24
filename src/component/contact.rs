@@ -278,7 +278,7 @@ pub fn Contact() -> impl IntoView {
 pub async fn get_web3forms_key() -> Result<String, ServerFnError> {
     #[cfg(feature = "ssr")]
     {
-        let key = std::env::var("WEB3FROM_ACCESS_KEY").to_string();
+        let key = std::env::var("WEB3FROM_ACCESS_KEY").unwrap_or_default();
         if key.is_empty() {
             return Err(ServerFnError::ServerError(
                 "WEB3FROM_ACCESS_KEY is not set".into(),

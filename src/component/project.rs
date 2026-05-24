@@ -9,6 +9,10 @@ pub struct ProjectInfo {
     pub technologies: Vec<String>,
     pub category: String,
     pub long_description: String,
+    pub image_url: Option<String>,
+    pub github_url: Option<String>,
+    pub download_url: Option<String>,
+    pub live_url: Option<String>,
 }
 
 pub fn get_mock_projects() -> Vec<ProjectInfo> {
@@ -20,6 +24,10 @@ pub fn get_mock_projects() -> Vec<ProjectInfo> {
             technologies: vec!["HTML".to_string(), "CSS".to_string(), "JavaScript".to_string(), "Express".to_string()],
             category: "WebApp".to_string(),
             long_description: "A comprehensive Point Of Sale system designed for small to medium retail businesses. It allows you to track sales, manage inventory in real-time, generate invoice receipts, and review daily sales analytics reports. Features client-side state caching for offline-resilience and local data synchronization.".to_string(),
+            image_url: Some("/assets/pos_mockup.png".to_string()),
+            github_url: Some("https://github.com/danarQ/pos-system-express".to_string()),
+            download_url: None,
+            live_url: Some("https://pos-system-express.demo.danarq.com".to_string()),
         },
         ProjectInfo {
             id: 2,
@@ -28,6 +36,10 @@ pub fn get_mock_projects() -> Vec<ProjectInfo> {
             technologies: vec!["Python".to_string(), "React".to_string(), "Node.js".to_string()],
             category: "WebApp".to_string(),
             long_description: "A secure document management and tracking system built for Disporapar. It simplifies incoming and outgoing mail administration, provides digital approval workflows, role-based access control, and full audit logging for government compliance.".to_string(),
+            image_url: Some("/assets/persuratan_mockup.png".to_string()),
+            github_url: Some("https://github.com/danarQ/persuratan-disporapar".to_string()),
+            download_url: None,
+            live_url: None,
         },
         ProjectInfo {
             id: 3,
@@ -36,6 +48,10 @@ pub fn get_mock_projects() -> Vec<ProjectInfo> {
             technologies: vec!["Flutter".to_string(), "Dart".to_string(), "Firebase".to_string()],
             category: "MobileApp".to_string(),
             long_description: "EcoTracker is a mobile application dedicated to environmental awareness. It calculates individual carbon footprints based on transport, diet, and energy use. Users can join community challenges, earn achievements, and view visual analytics charts showing their carbon reduction progress.".to_string(),
+            image_url: Some("/assets/ecotracker_mockup.png".to_string()),
+            github_url: Some("https://github.com/danarQ/ecotracker-mobile".to_string()),
+            download_url: Some("https://github.com/danarQ/ecotracker-mobile/releases/download/v1.0.0/ecotracker.apk".to_string()),
+            live_url: None,
         },
         ProjectInfo {
             id: 4,
@@ -44,6 +60,10 @@ pub fn get_mock_projects() -> Vec<ProjectInfo> {
             technologies: vec!["Rust".to_string(), "Leptos".to_string(), "WebAssembly".to_string()],
             category: "WebApp".to_string(),
             long_description: "An interactive online coding platform for compiling and running Rust code directly in the browser. It compiles source files to WebAssembly binaries and runs them in a sandboxed, isolated environment. Ideal for learning, rapid prototyping, and sharing Rust code snippets.".to_string(),
+            image_url: Some("/assets/compiler_mockup.png".to_string()),
+            github_url: Some("https://github.com/danarQ/rust-web-compiler".to_string()),
+            download_url: None,
+            live_url: Some("https://rust-compiler.danarq.com".to_string()),
         },
     ]
 }
@@ -62,6 +82,10 @@ pub mod db {
         pub technologies: Vec<String>,
         pub category: String,
         pub long_description: String,
+        pub image_url: Option<String>,
+        pub github_url: Option<String>,
+        pub download_url: Option<String>,
+        pub live_url: Option<String>,
     }
 
     #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -85,6 +109,10 @@ pub async fn get_projects() -> Result<Vec<ProjectInfo>, ServerFnError> {
                         technologies: m.technologies,
                         category: m.category,
                         long_description: m.long_description,
+                        image_url: m.image_url,
+                        github_url: m.github_url,
+                        download_url: m.download_url,
+                        live_url: m.live_url,
                     }).collect::<Vec<_>>();
                     return Ok(projects);
                 }
@@ -117,6 +145,10 @@ pub async fn get_project_by_id(id: usize) -> Result<ProjectInfo, ServerFnError> 
                         technologies: m.technologies,
                         category: m.category,
                         long_description: m.long_description,
+                        image_url: m.image_url,
+                        github_url: m.github_url,
+                        download_url: m.download_url,
+                        live_url: m.live_url,
                     });
                 }
                 Ok(None) => {
@@ -168,20 +200,6 @@ pub fn Project() -> impl IntoView {
         get_projects().await.unwrap_or_default()
     });
 
-    // Cache the lowercased strings so we don't allocate during the filter loop.
-    // This retains the full Unicode case-folding semantics of `to_lowercase()`,
-    // and allows us to use the standard library's highly optimized `contains()`.
-    let lowercased_projects = Memo::new(move |_| {
-        let current_projects = projects_resource.get().unwrap_or_default();
-        current_projects.into_iter().map(|p| {
-            let title = p.title.to_lowercase();
-            let desc = p.description.to_lowercase();
-            let techs = p.technologies.iter().map(|t| t.to_lowercase()).collect::<Vec<_>>();
-            let cat = p.category.to_lowercase();
-            (p, title, desc, techs, cat)
-        }).collect::<Vec<_>>()
-    });
-
     view! {
         <div class="project-container" id="projects">
             // Lempar signal ke SearchBar
@@ -193,21 +211,17 @@ pub fn Project() -> impl IntoView {
             <Suspense fallback=move || view! { <div class="project-loading">"Loading projects..."</div> }>
                 {move || {
                     let search_q = search_query.get().to_lowercase();
-                    // Track the resource to preserve the Suspense loading state
-                    projects_resource.track();
-                    let filtered = lowercased_projects.with(|cached| {
-                        cached
-                            .iter()
-                            .filter(|(_, title, desc, techs, cat)| {
-                                search_q.is_empty()
-                                    || title.contains(&search_q)
-                                    || desc.contains(&search_q)
-                                    || techs.iter().any(|tech| tech.contains(&search_q))
-                                    || cat.contains(&search_q)
-                            })
-                            .map(|(p, _, _, _, _)| p.clone())
-                            .collect::<Vec<_>>()
-                    });
+                    let current_projects = projects_resource.get().unwrap_or_default();
+                    let filtered = current_projects
+                        .into_iter()
+                        .filter(|p| {
+                            search_q.is_empty()
+                                || p.title.to_lowercase().contains(&search_q)
+                                || p.description.to_lowercase().contains(&search_q)
+                                || p.technologies.iter().any(|t| t.to_lowercase().contains(&search_q))
+                                || p.category.to_lowercase().contains(&search_q)
+                        })
+                        .collect::<Vec<ProjectInfo>>();
 
                     view! {
                         <div class="project-list" class:searching=move || !search_query.get().is_empty()>
