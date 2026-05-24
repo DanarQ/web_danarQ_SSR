@@ -1,91 +1,36 @@
-<picture>
-    <source srcset="https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_Solid_White.svg" media="(prefers-color-scheme: dark)">
-    <img src="https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_RGB.svg" alt="Leptos Logo">
-</picture>
+# Web Danar - Personal Portfolio
 
-# Leptos Axum Starter Template
+Personal portfolio website built with **Rust** and **Leptos**.
 
-This is a template for use with the [Leptos](https://github.com/leptos-rs/leptos) web framework and the [cargo-leptos](https://github.com/akesson/cargo-leptos) tool using [Axum](https://github.com/tokio-rs/axum).
+This project is mainly used to showcase my profile, skills, projects, and contact information in a simple, fast, and lightweight web app.
 
-## Creating your template repo
+The application currently uses **Server-Side Rendering (SSR)** with client-side hydration, so the initial page can be rendered from the server while still becoming interactive in the browser.
 
-If you don't have `cargo-leptos` installed you can install it with
+## Tech Stack
 
-```bash
-cargo install cargo-leptos --locked
-```
+- Rust 2024
+- Leptos 0.8.19
+- Server-Side Rendering (SSR)
+- Hydration
+- Axum
+- SeaORM
+- PostgreSQL / Supabase
+- SCSS / Sass
+- Leptos Icons
+- cargo-leptos
+- WebAssembly (WASM)
 
-Then run
-```bash
-cargo leptos new --git https://github.com/leptos-rs/start-axum
-```
+## Project Structure
 
-to generate a new project template.
+The current project structure is intentionally simple and may evolve as the application grows.
 
-```bash
-cd web-danar-q-ssr
-```
-
-to go to your newly created project.
-Feel free to explore the project structure, but the best place to start with your application code is in `src/app.rs`.
-Additionally, Cargo.toml may need updating as new versions of the dependencies are released, especially if things are not working after a `cargo update`.
-
-## Running your project
-
-```bash
-cargo leptos watch
-```
-
-## Installing Additional Tools
-
-By default, `cargo-leptos` uses `nightly` Rust, `cargo-generate`, and `sass`. If you run into any trouble, you may need to install one or more of these tools.
-
-1. `rustup toolchain install nightly --allow-downgrade` - make sure you have Rust nightly
-2. `rustup target add wasm32-unknown-unknown` - add the ability to compile Rust to WebAssembly
-3. `cargo install cargo-generate` - install `cargo-generate` binary (should be installed automatically in future)
-4. `npm install -g sass` - install `dart-sass` (should be optional in future
-5. Run `npm install` in end2end subdirectory before test
-
-## Compiling for Release
-```bash
-cargo leptos build --release
-```
-
-Will generate your server binary in target/release and your site package in target/site
-
-## Testing Your Project
-```bash
-cargo leptos end-to-end
-```
-
-```bash
-cargo leptos end-to-end --release
-```
-
-Cargo-leptos uses Playwright as the end-to-end test tool.
-Tests are located in end2end/tests directory.
-
-## Executing a Server on a Remote Machine Without the Toolchain
-After running a `cargo leptos build --release` the minimum files needed are:
-
-1. The server binary located in `target/server/release`
-2. The `site` directory and all files within located in `target/site`
-
-Copy these files to your remote server. The directory structure should be:
 ```text
-web-danar-q-ssr
-site/
-```
-Set the following environment variables (updating for your project as needed):
-```sh
-export LEPTOS_OUTPUT_NAME="web-danar-q-ssr"
-export LEPTOS_SITE_ROOT="site"
-export LEPTOS_SITE_PKG_DIR="pkg"
-export LEPTOS_SITE_ADDR="127.0.0.1:3000"
-export LEPTOS_RELOAD_PORT="3001"
-```
-Finally, run the server binary.
+src/
+├── main.rs
+├── lib.rs
+├── app.rs
+└── component/
 
-## Licensing
-
-This template itself is released under the Unlicense. You should replace the LICENSE for your own application with an appropriate license if you plan to release it publicly.
+style/
+├── main.scss
+└── styles/
