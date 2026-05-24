@@ -168,6 +168,20 @@ pub fn Project() -> impl IntoView {
         get_projects().await.unwrap_or_default()
     });
 
+    // Cache the lowercased strings so we don't allocate during the filter loop.
+    // This retains the full Unicode case-folding semantics of `to_lowercase()`,
+    // and allows us to use the standard library's highly optimized `contains()`.
+    let lowercased_projects = Memo::new(move |_| {
+        let current_projects = projects_resource.get().unwrap_or_default();
+        current_projects.into_iter().map(|p| {
+            let title = p.title.to_lowercase();
+            let desc = p.description.to_lowercase();
+            let techs = p.technologies.iter().map(|t| t.to_lowercase()).collect::<Vec<_>>();
+            let cat = p.category.to_lowercase();
+            (p, title, desc, techs, cat)
+        }).collect::<Vec<_>>()
+    });
+
     view! {
         <div class="project-container" id="projects">
             // Lempar signal ke SearchBar
@@ -179,17 +193,21 @@ pub fn Project() -> impl IntoView {
             <Suspense fallback=move || view! { <div class="project-loading">"Loading projects..."</div> }>
                 {move || {
                     let search_q = search_query.get().to_lowercase();
-                    let current_projects = projects_resource.get().unwrap_or_default();
-                    let filtered = current_projects
-                        .into_iter()
-                        .filter(|p| {
-                            search_q.is_empty()
-                                || p.title.to_lowercase().contains(&search_q)
-                                || p.description.to_lowercase().contains(&search_q)
-                                || p.technologies.iter().any(|tech| tech.to_lowercase().contains(&search_q))
-                                || p.category.to_lowercase().contains(&search_q)
-                        })
-                        .collect::<Vec<_>>();
+                    // Track the resource to preserve the Suspense loading state
+                    projects_resource.track();
+                    let filtered = lowercased_projects.with(|cached| {
+                        cached
+                            .iter()
+                            .filter(|(_, title, desc, techs, cat)| {
+                                search_q.is_empty()
+                                    || title.contains(&search_q)
+                                    || desc.contains(&search_q)
+                                    || techs.iter().any(|tech| tech.contains(&search_q))
+                                    || cat.contains(&search_q)
+                            })
+                            .map(|(p, _, _, _, _)| p.clone())
+                            .collect::<Vec<_>>()
+                    });
 
                     view! {
                         <div class="project-list" class:searching=move || !search_query.get().is_empty()>
