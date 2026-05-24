@@ -1,0 +1,132 @@
+$detail-bg-white: #ffffff;
+$detail-border-color: #dcdcdc;
+$detail-text-primary: #111111;
+$detail-text-muted: #555555;
+$detail-tech-bg: #f0f0f0;
+$detail-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+$detail-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+.project-detail-container {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  font-family: $body-font;
+
+  @media (max-width: 768px) {
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $detail-text-primary;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    transition: $detail-transition;
+
+    .back-icon {
+      font-size: 1.2rem;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      opacity: 0.8;
+      .back-icon {
+        transform: translateX(-4px);
+      }
+    }
+  }
+
+  .project-detail-loading {
+    font-size: 1.2rem;
+    text-align: center;
+    color: $detail-text-muted;
+    margin-top: 4rem;
+  }
+}
+
+.project-detail-content {
+  background: $detail-bg-white;
+  border: 1px solid $detail-border-color;
+  border-radius: 1.25rem;
+  padding: 3rem;
+  box-shadow: $detail-shadow;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+.project-detail-header {
+  border-bottom: 1px solid $detail-border-color;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+
+  .project-detail-category {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: $detail-text-muted;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: $heading-font;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: $detail-text-primary;
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.85rem;
+    }
+  }
+
+  .project-detail-summary {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: $detail-text-muted;
+    margin-bottom: 1.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+  }
+
+  .project-detail-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .tech-badge {
+      background: $detail-tech-bg;
+      color: $detail-text-primary;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+    }
+  }
+}
+
+.project-detail-body {
+  h2 {
+    font-family: $heading-font;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $detail-text-primary;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: $detail-text-muted;
+  }
+}

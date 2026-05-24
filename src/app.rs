@@ -2,13 +2,14 @@ use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, Meta, MetaTags, Stylesheet, Title};
 use leptos_router::{
     components::{Route, Router, Routes},
-    StaticSegment,
+    path,
 };
 
 use crate::component::contact::Contact;
 use crate::component::hero::Hero;
 use crate::component::navbar::Navbar;
 use crate::component::project::Project;
+use crate::component::project_detail::ProjectDetail;
 use crate::component::skills::Skills;
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
@@ -56,7 +57,8 @@ pub fn App() -> impl IntoView {
         // content for this welcome page
         <Router>
             <Routes fallback=|| "Page not found.".into_view()>
-                <Route path=StaticSegment("") view=HomePage/>
+                <Route path=path!("/") view=HomePage/>
+                <Route path=path!("/project/:id") view=ProjectDetail/>
             </Routes>
         </Router>
     }

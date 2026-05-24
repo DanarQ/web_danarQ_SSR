@@ -3,6 +3,7 @@
 #[cfg(feature = "ssr")]
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().ok();
     use axum::Router;
     use leptos::logging::log;
     use leptos::prelude::*;
@@ -15,8 +16,30 @@ async fn main() {
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(App);
 
+    let database_url = std::env::var("DATABASE_URL")
+        .or_else(|_| std::env::var("SUPABASE_URL"))
+        .unwrap_or_else(|_| "postgresql://postgres:postgres@localhost:5432/postgres".to_string());
+
+    let db_conn = match sea_orm::Database::connect(&database_url).await {
+        Ok(conn) => {
+            log!("Database connection established successfully!");
+            Some(conn)
+        }
+        Err(err) => {
+            log!("Warning: Database connection failed: {:?}", err);
+            None
+        }
+    };
+
     let app = Router::new()
-        .leptos_routes(&leptos_options, routes, {
+        .leptos_routes_with_context(&leptos_options, routes, {
+            let db = db_conn.clone();
+            move || {
+                if let Some(ref db) = db {
+                    provide_context(db.clone());
+                }
+            }
+        }, {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
         })

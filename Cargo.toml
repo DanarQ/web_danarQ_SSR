@@ -19,6 +19,8 @@ icondata = "0.7.0"
 leptos_icons = "0.7.1"
 gloo-net = "0.6"
 serde = { version = "1.0", features = ["derive"] }
+sea-orm = { version = "1.1.0", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"], optional = true }
+dotenvy = { version = "0.15", optional = true }
 
 [features]
 hydrate = [
@@ -30,6 +32,8 @@ ssr = [
     "dep:axum",
     "dep:tokio",
     "dep:leptos_axum",
+    "dep:sea-orm",
+    "dep:dotenvy",
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",
