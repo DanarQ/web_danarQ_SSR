@@ -15,4 +15,5 @@ Cargo.lock
 
 # Local environment variables
 .env
+GEMINI.md
 
