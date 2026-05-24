@@ -178,23 +178,25 @@ pub fn Project() -> impl IntoView {
             // Tampilkan hasil filter menggunakan for loop dari leptos
             <Suspense fallback=move || view! { <div class="project-loading">"Loading projects..."</div> }>
                 {move || {
-                    let search_q = search_query.get().to_lowercase();
                     let current_projects = projects_resource.get().unwrap_or_default();
-                    let filtered = current_projects
-                        .into_iter()
-                        .filter(|p| {
-                            search_q.is_empty()
-                                || p.title.to_lowercase().contains(&search_q)
-                                || p.description.to_lowercase().contains(&search_q)
-                                || p.technologies.iter().any(|tech| tech.to_lowercase().contains(&search_q))
-                                || p.category.to_lowercase().contains(&search_q)
-                        })
-                        .collect::<Vec<_>>();
 
                     view! {
                         <div class="project-list" class:searching=move || !search_query.get().is_empty()>
                             <For
-                                each=move || filtered.clone()
+                                each=move || {
+                                    let search_q = search_query.get().to_lowercase();
+                                    current_projects
+                                        .clone()
+                                        .into_iter()
+                                        .filter(|p| {
+                                            search_q.is_empty()
+                                                || p.title.to_lowercase().contains(&search_q)
+                                                || p.description.to_lowercase().contains(&search_q)
+                                                || p.technologies.iter().any(|tech| tech.to_lowercase().contains(&search_q))
+                                                || p.category.to_lowercase().contains(&search_q)
+                                        })
+                                        .collect::<Vec<_>>()
+                                }
                                 key=|proj| proj.id
                                 children=move |proj| {
                                     let techs = proj.technologies.clone();
