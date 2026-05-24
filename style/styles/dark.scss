@@ -1,0 +1,371 @@
+// Theme Toggle Button Styles (Light Mode defaults)
+.theme-toggle-btn {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  color: #111111;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+
+  .theme-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.07);
+    border-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+
+    .theme-icon {
+      transform: rotate(15deg);
+    }
+  }
+}
+
+// Layout management for theme toggles
+.navbar-mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .theme-toggle-btn {
+    display: none; // Hidden on desktop
+  }
+
+  @media (max-width: 768px) {
+    .theme-toggle-btn {
+      display: flex;
+    }
+  }
+}
+
+.menu-theme-toggle {
+  display: flex;
+  align-items: center;
+  margin-left: 1.5rem;
+
+  @media (max-width: 768px) {
+    display: none; // Hidden inside menu drawer on mobile (shown in actions bar instead)
+  }
+}
+
+// ==========================================
+// Dark Theme Overrides
+// ==========================================
+html.dark {
+  // Global body background and text color
+  body {
+    background-color: #0f172a; // Slate 900
+    color: #f1f5f9; // Slate 100
+  }
+
+  // Headings
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #ffffff !important;
+  }
+
+  // Muted texts
+  p,
+  .project-detail-summary,
+  .contact-info-subtitle,
+  .info-label,
+  .project-card p,
+  .hero p,
+  .contact-header p {
+    color: #94a3b8 !important; // Slate 400
+  }
+
+  // Theme toggle button overrides
+  .theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #ffd700; // Glowing gold for Sun icon
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #ffeb60;
+    }
+  }
+
+  // Navbar
+  .navbar {
+    background-color: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
+
+    &-logo a {
+      color: #ffffff;
+    }
+
+    &-toggle .bar {
+      background-color: #ffffff;
+    }
+
+    &-menu {
+      a {
+        color: #ffffff;
+
+        &::after {
+          background-color: #ffffff;
+        }
+      }
+
+      @media (max-width: 768px) {
+        background-color: rgba(15, 23, 42, 0.98);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+
+  // Project Cards
+  .project-card {
+    background-color: #1e293b; // Slate 800
+    border-color: #334155; // Slate 700
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    h3 {
+      color: #ffffff;
+    }
+  }
+
+  .project-card-link:hover {
+    .project-card {
+      border-color: #475569;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .project-technologies-item {
+    background-color: #334155;
+    color: #e2e8f0;
+  }
+
+  .project-category {
+    color: #e2e8f0;
+  }
+
+  .project-search-wrapper {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    .project-search-icon {
+      color: #f1f5f9;
+    }
+
+    .project-search-input {
+      color: #f1f5f9;
+      &::placeholder {
+        color: #64748b;
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      border-color: #475569;
+    }
+  }
+
+  // Skills
+  .skills-container h2::after {
+    background-color: #ffffff;
+  }
+
+  .skills-web-development,
+  .skills-mobile-development,
+  .skills-database,
+  .skills-programming-Languages {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      border-color: #475569;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    h3 {
+      color: #ffffff;
+    }
+
+    li {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+
+      svg {
+        color: #94a3b8;
+      }
+
+      &:hover {
+        background-color: #ffffff;
+        color: #0f172a;
+        border-color: #ffffff;
+
+        svg {
+          color: #0f172a;
+        }
+      }
+    }
+  }
+
+  // Contact
+  .contact-section {
+    background-color: #0b0f19; // Slightly darker for visual depth
+  }
+
+  .contact-header h2::after {
+    background-color: #ffffff;
+  }
+
+  .contact-card {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    &-icon {
+      background-color: #334155;
+      color: #ffffff;
+    }
+
+    &-content {
+      a,
+      span {
+        color: #ffffff;
+      }
+    }
+
+    &:hover {
+      border-color: #475569;
+      .contact-card-icon {
+        background-color: #ffffff;
+        color: #0f172a;
+      }
+    }
+  }
+
+  .contact-social-links .social-link-btn {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+
+    &:hover {
+      background-color: #ffffff;
+      color: #0f172a;
+      border-color: #ffffff;
+    }
+  }
+
+  .contact-form-wrapper {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      border-color: #475569;
+    }
+
+    .form-group {
+      label {
+        color: #ffffff;
+      }
+      input,
+      textarea {
+        background-color: #0f172a;
+        border-color: #334155;
+        color: #ffffff;
+
+        &:focus {
+          border-color: #ffffff;
+          box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+        }
+      }
+    }
+
+    .submit-btn {
+      background-color: #ffffff;
+      color: #0f172a;
+
+      &:hover:not(:disabled) {
+        background-color: #e2e8f0;
+      }
+    }
+  }
+
+  // Project Detail Page
+  .back-btn {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+  }
+
+  .project-detail-content,
+  .project-detail-card {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+
+    h1,
+    h2,
+    h3 {
+      color: #ffffff;
+    }
+
+    .info-value {
+      color: #ffffff;
+    }
+
+    .info-row {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .project-detail-banner-container {
+    border-color: #334155;
+  }
+
+  .tech-badge {
+    background-color: #334155 !important;
+    color: #e2e8f0 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+  }
+
+  .project-detail-header-inner .project-detail-category {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+  }
+
+  // GitHub button overrides in dark mode
+  .github-btn {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+
+    &:hover {
+      background-color: #e2e8f0 !important;
+    }
+  }
+}
