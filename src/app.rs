@@ -22,6 +22,24 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <AutoReload options=options.clone() />
                 <HydrationScripts options/>
                 <MetaTags/>
+                <script>
+                    "try {
+                        var saved = localStorage.getItem('dark-mode');
+                        var isDark = false;
+                        if (saved === 'true') {
+                            isDark = true;
+                        } else if (saved === null) {
+                            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                                isDark = true;
+                            }
+                        }
+                        if (isDark) {
+                            document.documentElement.classList.add('dark');
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                        }
+                    } catch (_) {}"
+                </script>
             </head>
             <body>
                 <App/>
@@ -30,10 +48,47 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
     }
 }
 
+#[derive(Clone, Copy, Debug)]
+pub struct DarkMode(pub RwSignal<bool>);
+
 #[component]
 pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
+
+    let dark_mode = RwSignal::new(false);
+    provide_context(DarkMode(dark_mode));
+
+    // Effect to run on hydration / client startup to sync current state
+    #[cfg(target_arch = "wasm32")]
+    {
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+        let html_element = document.document_element().unwrap();
+        
+        let first_run = std::cell::Cell::new(true);
+        Effect::new(move |_| {
+            let dark = dark_mode.get();
+            
+            if first_run.get() {
+                first_run.set(false);
+                let is_dark = html_element.class_list().contains("dark");
+                if is_dark != dark {
+                    dark_mode.set(is_dark);
+                }
+            } else {
+                if let Ok(Some(storage)) = window.local_storage() {
+                    let _ = storage.set_item("dark-mode", if dark { "true" } else { "false" });
+                }
+                
+                if dark {
+                    let _ = html_element.class_list().add_1("dark");
+                } else {
+                    let _ = html_element.class_list().remove_1("dark");
+                }
+            }
+        });
+    }
 
     view! {
         // injects a stylesheet into the document <head>

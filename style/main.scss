@@ -5,10 +5,17 @@
 @import "./styles/skills.scss";
 @import "./styles/contact.scss";
 @import "./styles/project_detail.scss";
-
+@import "./styles/dark.scss";
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  font-family: $body-font;
+  background-color: #ffffff;
+  color: #111111;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
