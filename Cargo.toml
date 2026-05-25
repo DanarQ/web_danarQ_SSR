@@ -22,6 +22,7 @@ serde = { version = "1.0", features = ["derive"] }
 sea-orm = { version = "1.1.0", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"], optional = true }
 dotenvy = { version = "0.15", optional = true }
 web-sys = { version = "0.3.77", features = ["Window", "Document", "Element", "DomTokenList", "Storage"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false, optional = true }
 
 [features]
 hydrate = [
@@ -35,6 +36,7 @@ ssr = [
     "dep:leptos_axum",
     "dep:sea-orm",
     "dep:dotenvy",
+    "dep:reqwest",
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",

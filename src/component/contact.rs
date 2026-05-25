@@ -35,72 +35,23 @@ pub fn Contact() -> impl IntoView {
         set_error_message.set(None);
         set_is_submitting.set(true);
 
-        //Mengambil access key untuk web3forms
         #[cfg(target_arch = "wasm32")]
         leptos::task::spawn_local(async move {
-            let access_key = match get_web3forms_key().await {
-                Ok(key) => key,
-                Err(err) => {
-                    set_is_submitting.set(false);
-                    set_error_message.set(Some(format!(
-                        "Failed to retrieve form access key: {}",
-                        err
-                    )));
-                    return;
-                }
-            };
-
-            #[derive(serde::Serialize)]
-            struct Web3FormsPayload {
-                access_key: String,
-                name: String,
-                email: String,
-                subject: String,
-                message: String,
-            }
-
-            let payload = Web3FormsPayload {
-                access_key,
-                name: n,
-                email: e,
-                subject: s,
-                message: m,
-            };
-
-            let response = gloo_net::http::Request::post("https://api.web3forms.com/submit")
-                .json(&payload);
+            let response = submit_contact_form(n, e, s, m).await;
 
             match response {
-                Ok(req) => {
-                    match req.send().await {
-                        Ok(resp) if resp.ok() => {
-                            set_is_submitting.set(false);
-                            set_submit_success.set(true);
-                            set_name.set(String::new());
-                            set_email.set(String::new());
-                            set_subject.set(String::new());
-                            set_message.set(String::new());
-                        }
-                        Ok(resp) => {
-                            set_is_submitting.set(false);
-                            set_error_message.set(Some(format!(
-                                "Failed to send message: Web3Forms returned status {}",
-                                resp.status()
-                            )));
-                        }
-                        Err(err) => {
-                            set_is_submitting.set(false);
-                            set_error_message.set(Some(format!(
-                                "Network error: Failed to send message. ({})",
-                                err
-                            )));
-                        }
-                    }
+                Ok(_) => {
+                    set_is_submitting.set(false);
+                    set_submit_success.set(true);
+                    set_name.set(String::new());
+                    set_email.set(String::new());
+                    set_subject.set(String::new());
+                    set_message.set(String::new());
                 }
                 Err(err) => {
                     set_is_submitting.set(false);
                     set_error_message.set(Some(format!(
-                        "Serialization error: Failed to parse input. ({})",
+                        "Failed to send message: {}",
                         err
                     )));
                 }
@@ -274,20 +225,54 @@ pub fn Contact() -> impl IntoView {
     }
 }
 
-#[server(GetWeb3FormsKey, "/api")]
-pub async fn get_web3forms_key() -> Result<String, ServerFnError> {
+#[server(SubmitContactForm, "/api")]
+pub async fn submit_contact_form(
+    name: String,
+    email: String,
+    subject: String,
+    message: String,
+) -> Result<(), ServerFnError> {
     #[cfg(feature = "ssr")]
     {
         let key = std::env::var("WEB3FROM_ACCESS_KEY").unwrap_or_default();
         if key.is_empty() {
-            return Err(ServerFnError::ServerError(
-                "WEB3FROM_ACCESS_KEY is not set".into(),
-            ));
+            return Err(ServerFnError::new("WEB3FROM_ACCESS_KEY is not set"));
         }
-        Ok(key)
+
+        #[derive(serde::Serialize)]
+        struct Web3FormsPayload {
+            access_key: String,
+            name: String,
+            email: String,
+            subject: String,
+            message: String,
+        }
+
+        let payload = Web3FormsPayload {
+            access_key: key,
+            name,
+            email,
+            subject,
+            message,
+        };
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post("https://api.web3forms.com/submit")
+            .json(&payload)
+            .send()
+            .await
+            .map_err(|e| ServerFnError::new(format!("Network error: {}", e)))?;
+
+        if response.status().is_success() {
+            Ok(())
+        } else {
+            Err(ServerFnError::new(format!("API returned status: {}", response.status())))
+        }
     }
     #[cfg(not(feature = "ssr"))]
     {
+        let _ = (name, email, subject, message);
         unreachable!()
     }
 }
